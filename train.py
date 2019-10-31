@@ -1,7 +1,9 @@
 #先跑python crop_images.py  生成数据集.
 
 
+import os
 
+os.environ['CUDA_VISIBLE_DEVICES']='0'
 
 
 
@@ -20,7 +22,7 @@ import torchvision
 
 from models import Generator, Discriminator
 
-batch_size = 10
+batch_size = 27# 24G显存只能开到这里.算法很吃显存.
 lambda_cycle = 1
 lambda_identity = 2
 lr = 0.0001
@@ -73,11 +75,13 @@ sampler_pos = torch.utils.data.sampler.SubsetRandomSampler(labels_pos)
 pos_loader = torch.utils.data.DataLoader(dataset,
                                          sampler=sampler_pos,
                                          batch_size=batch_size,
+                                         drop_last=True #不写的话训练最后一个batch会报错.
                                         )
 
 neg_loader = torch.utils.data.DataLoader(dataset,
                                          sampler=sampler_neg,
                                          batch_size=batch_size,
+                                         drop_last=True
                                         )
 
 # Init models
